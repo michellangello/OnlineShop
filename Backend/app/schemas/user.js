@@ -1,21 +1,29 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { isEmail } = require('validator');
-
+const { isEmail, isAlpha } = require('validator');
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    name: {
+    firstname: {
         type: 'String',
         required: true,
         trim: true,
-        unique: true
+        required: 'Name address is required',
+        validate: [isAlpha, 'Please fill a valid Name']
+    },
+    secondname: {
+        type: 'String',
+        required: true,
+        trim: true,
+        required: 'Surname address is required',
+        validate: [isAlpha, 'Please fill a valid Surname']
     },
     password: {
         type: 'String',
         required: true,
-        trim: true
+        trim: true,
+        required: 'Email address is required',
     },
     email: {
         type: String,
@@ -24,12 +32,18 @@ const userSchema = new Schema({
         unique: true,
         required: 'Email address is required',
         validate: [isEmail, 'Please fill a valid email address']
+    },
+    role: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role',
     }
 });
 
+
 userSchema.pre('save', function (next) {
     const user = this;
-    if (!user.isModified || !user.isNew) { // don't rehash if it's an old user
+
+    if (!user.isModified || !user.isNew) {
         next();
     } else {
         bcrypt.hash(user.password, 10, function (err, hash) {
@@ -44,4 +58,4 @@ userSchema.pre('save', function (next) {
     }
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Users', userSchema);

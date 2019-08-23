@@ -1,6 +1,32 @@
 const jwt = require('jsonwebtoken');
 
+
+
 module.exports = {
+  checkAuthorize: (roles) => {
+    return function (req, res, next) {
+
+
+      const authorizationHeaader = req.headers.authorization;
+      let result;
+      if (authorizationHeaader) {
+        const token = req.headers.authorization.split(' ')[1]; // Bearer <token>
+        
+        const options = { expiresIn: '2d', issuer: 'https://scotch.io' };
+        const secret = process.env.JWT_SECRET;
+
+        console.log('jwt.decode(token)');
+        console.log(jwt.decode(token, options));
+        const decodedToken = jwt.decode(token, options);
+        console.log(decodedToken.role);
+
+      }
+
+      next();
+
+    }
+  },
+
   validateToken: (req, res, next) => {
     const authorizationHeaader = req.headers.authorization;
     let result;
@@ -23,7 +49,7 @@ module.exports = {
         throw new Error(err);
       }
     } else {
-      result = { 
+      result = {
         error: `Authentication error. Token required.`,
         status: 401
       };

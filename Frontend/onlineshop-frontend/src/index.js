@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import MediaCard from './Card';
-import App from './App';
+import App from './components/app.component';
 
 
 

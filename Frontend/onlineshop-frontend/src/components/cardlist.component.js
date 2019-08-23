@@ -12,8 +12,11 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ProductCard from "./card.component";
 
 import axios from 'axios';
+
+const BrowserHistory = require('react-router/lib/BrowserHistory').default;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -39,12 +42,15 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
 
     },
+    grid: {
+        spacing: 24,
+        padding: 24,
+    }
 }));
 
 
 
 const MediaCardList = (props) => {
-
 
     const defaultResponse = {
         error: false,
@@ -80,50 +86,20 @@ const MediaCardList = (props) => {
     else if (!response.isLoaded) {
         return <CircularProgress className={classes.progress} />;
     }
-    else
+    else {
         return (
-            response.cards.map(card => {
-                return <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item>
-                            <CardActions>
-                                <CardMedia
-                                    component="img"
-                                    alt="Contemplative Reptile"
-                                    image={card.images[0]}
-                                    title="Contemplative Reptile"
-                                />
-                            </CardActions>
+            <Grid container spacing={classes.grid} style={{ padding: 25 }}>
+                {
+                    response.cards.map(card => (
+                        <Grid item xs={12} sm={6} lg={4} xl={4}>
+                            <ProductCard card={card} />
                         </Grid>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" spacing={2}>
-                                <Grid item xs>
-                                    <Typography gutterBottom variant="h5" >
-                                        {card.name}
-                                    </Typography>
-                                    <Typography variant="body2" gutterBottom>
-                                        Full resolution 1920x1080 • JPEG
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        ID: 1030114
-                                     </Typography>
-                                </Grid>
-                                <Grid item>
-                                    <Fab variant="extended" color="primary" aria-label="add" className={classes.fab}>
-                                        <AddIcon />
-                                        Add to card
-                                       </Fab>
-                                </Grid>
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="h5">${card.price}</Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            })
-        );
-}
+                    ))
+                };
+                            <div><button onClick={BrowserHistory.goBack}>Go Back</button></div>
 
-// export default withStyles(styles)(MediaCard);
+            </Grid>
+        );
+    }
+}
 export default MediaCardList;
