@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import MaterialTable from 'material-table';
 import UsersInfoTable from './admin.usersinfo.component';
 
@@ -48,7 +48,15 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+
+
+
 export default function MaterialTableDemo() {
+    
+    useEffect(()=>
+    {
+
+    })
 
     const classes = useStyles();
 
@@ -58,8 +66,8 @@ export default function MaterialTableDemo() {
                 <AppBar position="fixed" className={classes.appBar}>
                     <Toolbar>
                         <Typography variant="h6" noWrap>
-                            Clipped drawer
-          </Typography>
+                            Online Shop
+                        </Typography>
                     </Toolbar>
                 </AppBar>
                 <AdminNavBar></AdminNavBar>

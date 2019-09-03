@@ -16,8 +16,6 @@ import ProductCard from "./card.component";
 
 import axios from 'axios';
 
-const BrowserHistory = require('react-router/lib/BrowserHistory').default;
-
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
@@ -96,8 +94,6 @@ const MediaCardList = (props) => {
                         </Grid>
                     ))
                 };
-                            <div><button onClick={BrowserHistory.goBack}>Go Back</button></div>
-
             </Grid>
         );
     }

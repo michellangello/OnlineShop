@@ -1,5 +1,5 @@
-const Roles = require('../schemas/role')
-const { wrap } = require('../helpers/functional')
+const Roles = require('../schemas/role');
+const { wrap } = require('../helpers/functional');
 
 
 const getRoles = wrap(async req => {
@@ -9,9 +9,9 @@ const getRoles = wrap(async req => {
         .exec();
 
     return { body: roles };
-})
+});
 
 
 module.exports = {
     getRoles
-}
+};

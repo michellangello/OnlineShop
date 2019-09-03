@@ -6,12 +6,13 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom';
 import MediaCardList from './cardlist.component';
 import Login from './login.component';
 import Register from './register.component';
 import Admin from './admin.component';
 import NotFound from './notfound.component';
+import { logout } from '../helpers/auth-helper';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -40,23 +41,42 @@ export default function HeaderAppBar() {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
-                            <Button color="inherit" component={AdapterLink}  to={'/'} className="nav-link">Home</Button>
+                            <Button color="inherit" component={AdapterLink} to={'/'} className="nav-link">Home</Button>
                         </Typography>
-
-
-
-                        <Button color="inherit" component={AdapterLink} to="/login">Login</Button>
-
+                        {
+                            (!!localStorage.getItem('token'))
+                                ? <Button color="inherit" component={AdapterLink} to="/login">Login</Button>
+                                : <Button color="inherit" component={AdapterLink} onClick={logout()} to="/login">Logout</Button>
+                        }
                     </Toolbar>
                 </AppBar>
                 <Switch>
                     <Route exact path='/' component={MediaCardList} />
                     <Route path='/login' component={Login} />
                     <Route path='/register' component={Register} />
-                    <Route path='/admin' component={Admin} />
+                    <PrivateRoute path="/admin" component={Admin} />
                     <Route path="*" component={NotFound} />
                 </Switch>
             </Router>
         </div>
+    );
+}
+
+
+function PrivateRoute({ component: Component, ...rest }) {
+    return (
+        <Route
+            {...rest}
+            render={props =>
+                !!localStorage.getItem('token') ? (<Component {...props} />)
+                    : (<Redirect
+                        to={{
+                            pathname: "/login",
+                            state: { from: props.location }
+                        }}
+                    />
+                    )
+            }
+        />
     );
 }

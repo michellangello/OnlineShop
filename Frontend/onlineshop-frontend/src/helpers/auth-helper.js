@@ -1,4 +1,4 @@
-export function authHeader() {
+const authHeader = () => {
     let token = localStorage.getItem('token');
 
     if (token) {
@@ -6,4 +6,14 @@ export function authHeader() {
     } else {
         return "";
     }
+}
+
+const logout = () => {
+    localStorage.removeItem('token');
+}
+
+export 
+{
+    authHeader, 
+    logout
 }

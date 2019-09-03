@@ -17,14 +17,19 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
+    "jshint": "^2.10.2",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.1"
   },
   "scripts": {
     "test": "test",
-    "start": "node server.js",
+    "start": "cross-env NODE_ENV=development nodemon index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "jshintConfig": {
+    "esversion": 9,
+    "node": true
+  }
 }

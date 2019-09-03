@@ -1,7 +1,7 @@
 const Product = require('../schemas/product');
 const R = require('ramda');
-const { cSort, cFindProducts, cSkip, cLimit, cExecuteQuery } = require('../helpers/helper')
-const { wrap } = require('../helpers/functional')
+const { cSort, cFindProducts, cSkip, cLimit, cExecuteQuery } = require('../helpers/helper');
+const { wrap } = require('../helpers/functional');
 
 const trace = R.curry((tag, x) => {
     console.log(tag, x);
@@ -23,12 +23,7 @@ const getSortedProducts = wrap(async req => {
     )({});
 
     return { body: result };
-})
-
-
-
-
-const addImage = (path, array) => array.push(path);
+});
 
 
 const createProduct = wrap(async req => {
@@ -36,12 +31,12 @@ const createProduct = wrap(async req => {
     const rt = R.pipe(
         R.curry(body => new Product(body)),
         R.curry(model => model.save()),
-        R.then(result => { return { body: result } }),
-        R.otherwise(error => { return { body: error } })
+        R.then(result => { return { body: result }; }),
+        R.otherwise(error => { return { body: error }; })
     )(req.body);
 
     return { body: rt };
-})
+});
 
 module.exports = {
     getSortedProducts,

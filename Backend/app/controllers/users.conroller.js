@@ -88,10 +88,10 @@ const getUsers = wrap(async req => {
         cSort(R.__, sort_by),
         cSkip(R.__, offset, limit),
         cLimit(R.__, limit),
-        cExecuteQuery,
+        cExecuteQuery
     )({});
 
-    var Tcount = User.count({}).exec();;
+    var Tcount = User.count({}).exec();
     console.log(result);
     return {
         body: {
@@ -104,8 +104,8 @@ const getUsers = wrap(async req => {
 
 
 const updateUser = wrap(async req => {
-    pipe(
-        User.findByIdAndUpdate,
+    return await pipe(
+        curry((id) => User.findByIdAndUpdate),
         otherwise(error => { status = 400, body = error }),
         then(result => {
 
@@ -124,48 +124,52 @@ const login = (req, res) => {
     let result = {};
     let status = 200;
 
-    User.findOne({ email: login }, (err, user) => {
-        if (!err && user) {
-            // We could compare passwords in our model instead of below as well
-            bcrypt.compare(password, user.password).then(match => {
-                if (match) {
-                    status = 200;
-                    // Create a token
-                    const payload = {
-                        user: user.name,
-                        role: user.role.name
-                    };
-                    const options = { expiresIn: '2d', issuer: 'https://scotch.io' };
-                    const secret = process.env.JWT_SECRET;
+    User.findOne({ email: login })
+        .populate('role', 'name')
+        .exec((err, user) => {
+            if (!err && user) {
+                // We could compare passwords in our model instead of below as well
+                bcrypt.compare(password, user.password).then(match => {
+                    if (match) {
+                        status = 200;
+                        // Create a token
+                        const payload = {
+                            user: user.email,
+                            role: user.role.name
+                        };
+                        console.log(payload);
 
-                    console.log(secret);
-                    const token = jwt.sign(payload, secret, options);
+                        const options = { expiresIn: '2d', issuer: 'https://scotch.io' };
+                        const secret = process.env.JWT_SECRET;
 
-                    // console.log('TOKEN', token);
-                    result.token = token;
+                        console.log(secret);
+                        const token = jwt.sign(payload, secret, options);
+
+                        // console.log('TOKEN', token);
+                        result.token = token;
+                        result.status = status;
+                        result.result = user;
+                    } else {
+                        status = 401;
+                        result.status = status;
+                        result.error = `Authentication error`;
+                    }
+                    res.status(status).send(result);
+                }).catch(err => {
+
+                    console.log(err);
+                    status = 500;
                     result.status = status;
-                    result.result = user;
-                } else {
-                    status = 401;
-                    result.status = status;
-                    result.error = `Authentication error`;
-                }
-                res.status(status).send(result);
-            }).catch(err => {
-
-                console.log(err);
-                status = 500;
+                    result.error = err;
+                    res.status(status).send(result);
+                });
+            } else {
+                status = 404;
                 result.status = status;
                 result.error = err;
                 res.status(status).send(result);
-            });
-        } else {
-            status = 404;
-            result.status = status;
-            result.error = err;
-            res.status(status).send(result);
-        }
-    });
+            }
+        });
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
@@ -13,6 +13,8 @@ import Container from '@material-ui/core/Container';
 import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
 import { login } from '../services/user.service';
+import { Redirect } from 'react-router-dom';
+
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -45,13 +47,24 @@ const Login = (props) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const from = props.location.state || { from: { pathname: '/admin' } }
 
   const classes = useStyles();
 
   function handleClick(e) {
     e.preventDefault();
+    setIsAuthenticated(login(email, password));
+  }
 
-    login(email, password);
+  useEffect(() => {
+    console.log(isAuthenticated);
+  }, [isAuthenticated]);
+
+  if (isAuthenticated) {
+    return (
+      <Redirect to={from} />
+    )
   }
 
   return (
